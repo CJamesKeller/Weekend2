@@ -1,10 +1,11 @@
 var buttonNumber;
 var numberArray = [];
-var counterNumbers;
+var counterNumbers = 0;
 var buttonOperator;
 var operatorArray = [];
-var counterOperators;
+var counterOperators = 0;
 var calculationObject = {};
+var canSend = false;
 
 $(document).ready(function()
 {
@@ -13,18 +14,14 @@ $(document).ready(function()
 //end of DocReady
 });
 
-//checks for which buttons have been pressed
+//checks for which buttons have been pressed in what order
 function buttonClicked()
 {
-  if(typeof(calculationObject.secondNum) === "string")
+  if(counterOperators === 1)
   {
-    finalCheckButton();
+    nextCheckButton();
   }
-  else if(typeof(calculationObject.operator) === "string")
-  {
-    thirdCheckButton();
-  }
-  else if(typeof(calculationObject.firstNum) === "string")
+  else if(counterNumbers === 1)
   {
     secondCheckButton();
   }
@@ -41,7 +38,7 @@ function firstCheckButton()
   {
     buttonNumber = this.dataNumber;
     storeNumberData = buttonNumber;
-    var counterNumbers = 0;
+    counterNumbers = 1;
   }
   else
   {
@@ -52,6 +49,16 @@ function firstCheckButton()
 function errorMessage()
 {
   $("#result").text("ERROR");
+  clearInfo();
+}
+
+//this clears arrays of info as well as counters
+function clearInfo()
+{
+  numberArray = [];
+  operatorArray = [];
+  counterNumbers = 0;
+  counterOperators = 0;
 }
 
 //this function concatenates multi-digit numbers or adds operator
@@ -64,11 +71,11 @@ function secondCheckButton()
   storeNumberData += buttonNumber;
   break;
   case 'operator':
+  numberArray[counterNumbers] = storeNumberData;
   counterNumbers++;
-  calculationObject.firstNum = storeNumberData;
   buttonData = this.dataOperator;
-  calculationObject.operator = buttonData;
-  thirdCheckButton();
+  operatorArray[counterOperators] = buttonData;
+  counterOperators++;
   break;
   case 'spec':
   buttonData = this.dataSpec;
@@ -85,6 +92,7 @@ function specialCases()
   if(buttonData == "clear")
   {
     $("#result").empty();
+    clearInfo();
   }
   else if (buttonData == "perform")
   {
@@ -92,24 +100,53 @@ function specialCases()
   }
 }
 
-function thirdCheckButton()
+//this ensures another number comes after operator
+function nextCheckButton()
+{
+  if(this.data == "number")
+  {
+    nextNum();
+  }
+  else
+  {
+    nextNonNum();
+  }
+}
+
+function nextNum()
+{
+  buttonNumber = this.dataNumber;
+  storeNumberData += buttonNumber;
+  canSend = true;
+}
+
+function nextNonNum()
 {
   switch(this.data)
   {
-  case 'number':
-  buttonNumber = this.dataNumber;
-  storeSecondNumber += buttonNumber;
-  break;
   case 'operator':
-  errorMessage();
+  operatorSplit();
   break;
   case 'spec':
   buttonData = this.dataSpec;
-  specialCases();
+  finalSpecialCases();
   break;
   default:
   errorMessage();
   break;
+  }
+}
+
+//this prevents an attempt to calculate on N,O,N,O,etc- type inputs ("nono's!")
+function operatorSplit()
+{
+  if(canSend)
+  {
+    canSend = false;
+  }
+  else
+  {
+    errorMessage();
   }
 }
 
@@ -118,40 +155,31 @@ function finalSpecialCases()
   if(buttonData == "clear")
   {
     $("#result").empty();
+    clearInfo();
   }
   else if (buttonData == "perform")
   {
-    calculationObject.firstNum = storeNumberData;
-    sendReq();
+    checkToSend();
   }
 }
 
-function finalCheckButton()
+function checkToSend()
 {
-  switch(this.data)
+  if(canSend)
   {
-  case 'number':
-  buttonNumber = this.dataNumber;
-  storeSecondNumber += buttonNumber;
-  break;
-  case 'operator':
-  calculationObject.secondNum = storeSecondNumber;
-  buttonData = this.dataOperator;
-  calculationObject.operator = buttonData;
-  thirdCheckButton();
-  break;
-  case 'spec':
-  buttonData = this.dataSpec;
-  specialCases();
-  break;
-  default:
-  errorMessage();
-  break;
+    sendReq();
+  }
+  else
+  {
+    errorMessage();
   }
 }
 
 function sendReq()
 {
+  calculationObject.numbers = numberArray;
+  calculationObject.operators = operatorArray;
+
   $.ajax(
     {
     type: "POST",
