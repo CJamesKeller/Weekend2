@@ -1,9 +1,5 @@
 $(document).ready(function(){
     $("#submitButton").on("click", function(){
-      console.log("Meow");
-
-      //nameAdd
-
       var name = $("#nameAdd").val();
       var details = $("#detailsAdd").val();
 
@@ -12,8 +8,16 @@ $(document).ready(function(){
         url: "/kitty/" + name + "/" + details,
         // "/data/scott/teacher"
         success: function(responseFromServer){
-          console.log(responseFromServer);
         }
       });
     });
+
+//end of DocReady
 });
+
+//send numbers and operation to server as object
+//{ x: 3, y: 4, type: Add }
+
+//delay response from server to display for 3000, with "computing" until res
+
+//
