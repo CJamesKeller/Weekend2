@@ -1,0 +1,60 @@
+#numberButtons
+{
+  width: 170px;
+  float: left;
+  background-color: lightgrey;
+  margin: 0;
+  border-bottom: 5px solid black;
+  border-left: 5px solid black;
+  padding-left: 10px;
+  padding-top: 10px;
+  padding-bottom: 10px;
+}
+
+#operatorButtons
+{
+  width: 50px;
+  float: left;
+  background-color: lightgrey;
+  border-bottom: 5px solid black;
+  border-right: 5px solid black;
+  padding-top: 10px;
+  padding-bottom: 10px;
+}
+
+#result
+{
+  width: 230px;
+  background-color: silver;
+  height: 40px;
+  border-top: 5px solid black;
+  border-right: 5px solid black;
+  border-left: 5px solid black;
+  border-bottom: 2px solid darkgrey;
+}
+
+button
+{
+  width: 40px;
+  height: 40px;
+}
+
+.numbers
+{
+  background-color: lightgrey;
+}
+
+.operators
+{
+  background-color: lightgrey;
+}
+
+.numbers:hover
+{
+  background-color: grey;
+}
+
+.operators:hover
+{
+  background-color: grey;
+}
