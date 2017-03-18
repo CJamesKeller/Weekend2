@@ -1,23 +1,24 @@
 var buttonData;
+var storeNumberData;
+var calculationObject = {};
 
 $(document).ready(function()
 {
     $("button").on("click", checkButton());
 
-    sendReq();
-
 //end of DocReady
 });
 
-function checkButton(data)
+function checkButton()
 {
   switch(this.data)
   {
-  case 'spec':
-  buttonData = this.dataSpec;
-  break;
   case 'number':
   buttonData = this.dataNumber;
+  storeNumberData += buttonData;
+  break;
+  case 'spec':
+  buttonData = this.dataSpec;
   break;
   case 'operator':
   buttonData = this.dataOperator;
@@ -26,51 +27,27 @@ function checkButton(data)
   buttonData = "Error!";
   break;
   }
+  createCalcObject();
+}
+
+function createCalcObject()
+{
+
 }
 
 function sendReq()
 {
   $.ajax(
     {
-    type: "GET",
-    success: updateDom
+    type: "POST",
+    url: "/index.html",
+    data: buttonData,
+    success: function(response)
+      {
+      updateDom(response);
+      }
     });
 }
-
-// $("form").on("submit", function(e)
-// {
-//   e.preventDefault();
-//   var product = {};
-//   product.make = $("#make").val();
-//   product.model = $("#model").val();
-//   console.log(product);
-//   $.ajax({
-//     type: "POST",
-//     url: "/newProduct",
-//     data: product,
-//     success: function(res)
-//     {
-//       //It will send status 200 anyways
-//       console.log("Success!");
-//     }
-//   });
-//   refreshProducts();
-// });
-//
-// function refreshProducts()
-// {
-//   //Takes in server-side "products"
-//     $.ajax({
-//       type: "GET",
-//       url: "/products",
-//       success: function(response)
-//       {
-//         console.log(response);
-//         displayProducts(response);
-//       }
-//     });
-// }
-
 
 function updateDom(response)
 {
@@ -80,6 +57,6 @@ function updateDom(response)
 //send numbers and operation to server as object
 //{ x: 3, y: 4, type: Add }
 
-//delay response from server to display for 3000, with "computing" until res
+//EXTRA: delay res from server to display for 3000, with "computing" until res
 
 //
