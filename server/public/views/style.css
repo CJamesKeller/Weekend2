@@ -9,11 +9,16 @@
   border-bottom: 2px solid darkgrey;
 }
 
+#result:hover
+{
+  background-color: darkgrey;
+}
+
 button
 {
   width: 40px;
   height: 40px;
-  background-color: lightgrey;
+  background-color: skyblue;
 }
 
 button:hover
