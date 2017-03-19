@@ -1,3 +1,8 @@
+.container
+{
+  font-size: 24px;
+}
+
 #result
 {
   width: 230px;
@@ -7,6 +12,7 @@
   border-right: 5px solid black;
   border-left: 5px solid black;
   border-bottom: 2px solid darkgrey;
+  text-align: right;
 }
 
 #result:hover

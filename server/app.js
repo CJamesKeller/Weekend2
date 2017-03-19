@@ -8,20 +8,23 @@ var operatorArray = [];
 var calculatingArray = [];
 var output;
 
-//initial page
-app.use(express.static("server/public",
-{
-  index: "views/index.html"
-}));
+// set default path
+app.use(express.static('server/public'));
+
+// base URL 'GET'
+app.get('/', function(req, res) {
+  res.sendFile(path.resolve('server/public/views/index.html'));
+});
 
 //recieves post request and sends confirmation
-app.post("/*" , function(req, res)
+app.post("/calculate" , function(req, res)
 {
   var calculationObject = req;
   numberArray = calculationObject.numbers;
   operatorArray = calculationObject.operators;
   calculateResult();
   res.sendStatus(200);
+  res.send(output);
 });
 
 //creates single array of alternating numbers and operators
@@ -45,12 +48,6 @@ function arrayToCalc()
   numString.replace(",", "");
   output = eval(numString);
 }
-
-//sends evaluated answer as get response
-app.get("/*", function(req,res)
-{
-  res.send(output);
-});
 
 //this just shows it's working
 app.listen(port, function()
