@@ -14,11 +14,13 @@ app.use(express.static('server/public'));
 // base URL 'GET'
 app.get('/', function(req, res) {
   res.sendFile(path.resolve('server/public/views/index.html'));
+  console.log("Thing1");
 });
 
 //recieves post request and sends confirmation
 app.post("/calculate" , function(req, res)
 {
+  console.log("Thing2"); //This isn't working
   var calculationObject = req;
   numberArray = calculationObject.numbers;
   operatorArray = calculationObject.operators;
@@ -39,6 +41,7 @@ function calculateResult()
     }
   }
   arrayToCalc();
+  console.log("Thing3"); //This isn't working
 }
 
 //actually evaluates the whole input
@@ -47,6 +50,7 @@ function arrayToCalc()
   var numString = calculatingArray.toString();
   numString.replace(",", "");
   output = eval(numString);
+  console.log("Thing4"); //This isn't working
 }
 
 //this just shows it's working

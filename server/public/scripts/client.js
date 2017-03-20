@@ -10,7 +10,7 @@ var canSend = false;
 $(document).ready(function()
 {
     $("button").on("click", buttonClicked());
-
+    console.log("ThingA");
 //end of DocReady
 });
 
@@ -29,6 +29,7 @@ function buttonClicked()
   {
     firstCheckButton();
   }
+  console.log("ThingB");
 }
 
 //this function ensures first button is a number
@@ -44,12 +45,14 @@ function firstCheckButton()
   {
     errorMessage();
   }
+  console.log("ThingC");
 }
 
 function errorMessage()
 {
   $("#result").text("ERROR");
   clearInfo();
+  console.log("ThingD");
 }
 
 //this clears arrays of info as well as counters
@@ -59,6 +62,7 @@ function clearInfo()
   operatorArray = [];
   counterNumbers = 0;
   counterOperators = 0;
+  console.log("ThingE");
 }
 
 //this function concatenates multi-digit numbers or adds operator
@@ -85,6 +89,7 @@ function secondCheckButton()
   errorMessage();
   break;
   }
+  console.log("ThingF"); //This isn't working
 }
 
 function specialCases()
@@ -98,6 +103,7 @@ function specialCases()
   {
     errorMessage();
   }
+  console.log("ThingG"); //This isn't working
 }
 
 //this ensures another number comes after operator
@@ -111,6 +117,7 @@ function nextCheckButton()
   {
     nextNonNum();
   }
+  console.log("ThingH"); //This isn't working
 }
 
 function nextNum()
@@ -118,6 +125,7 @@ function nextNum()
   buttonNumber = this.dataNumber;
   storeNumberData += buttonNumber;
   canSend = true;
+  console.log("ThingI"); //This isn't working
 }
 
 function nextNonNum()
@@ -135,6 +143,7 @@ function nextNonNum()
   errorMessage();
   break;
   }
+  console.log("ThingJ"); //This isn't working
 }
 
 //this prevents an attempt to calculate on N,O,N,O,etc- type inputs ("nono's!")
@@ -148,6 +157,7 @@ function operatorSplit()
   {
     errorMessage();
   }
+  console.log("ThingK"); //This isn't working
 }
 
 function finalSpecialCases()
@@ -161,6 +171,7 @@ function finalSpecialCases()
   {
     checkToSend();
   }
+  console.log("ThingL"); //This isn't working
 }
 
 function checkToSend()
@@ -173,6 +184,7 @@ function checkToSend()
   {
     errorMessage();
   }
+  console.log("ThingM"); //This isn't working
 }
 
 function sendReq()
@@ -190,11 +202,13 @@ function sendReq()
       updateDom(response);
       }
     });
+    console.log("ThingN"); //This isn't working
 }
 
 function updateDom(response)
 {
   $("#result").append(response);
+  console.log("ThingO"); //This isn't working
 }
 
 //EXTRA: delay res from server to display for 3000, with "computing" until res
