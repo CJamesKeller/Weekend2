@@ -10,6 +10,9 @@ var output;
 
 // set default path
 app.use(express.static('server/public'));
+//apparently needed this
+var bodyParser = require('body-parser');
+app.use(bodyParser.urlencoded({extended: true}));
 
 // base URL 'GET'
 app.get('/', function(req, res) {
