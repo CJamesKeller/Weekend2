@@ -1,3 +1,5 @@
+var thisButton;
+var thisButtonData;
 var buttonNumber;
 var numberArray = [];
 var counterNumbers = 0;
@@ -9,35 +11,46 @@ var canSend = false;
 
 $(document).ready(function()
 {
-    $("button").on("click", buttonClicked());
-    console.log("ThingA");
+  //The next three lines are just to test the server-client communications
+  // numberArray = [1,2,3,4];
+  // operatorArray = ["add", "subtract", "multiply"];
+  // sendReq();
+
+  //This is what would actually be in the DocReady:
+    $(".container").on("click", "button", function()
+    {
+      thisButton = $(this);
+      console.log(thisButton);
+      buttonClicked(thisButtonData);
+      console.log("Click Listener!");
+    });
 //end of DocReady
 });
 
 //checks for which buttons have been pressed in what order
-function buttonClicked()
+function buttonClicked(thisButtonData)
 {
   if(counterOperators === 1)
   {
-    nextCheckButton();
+    nextCheckButton(thisButtonData);
   }
   else if(counterNumbers === 1)
   {
-    secondCheckButton();
+    secondCheckButton(thisButtonData);
   }
   else
   {
-    firstCheckButton();
+    firstCheckButton(thisButtonData);
   }
-  console.log("ThingB");
+  console.log("Click Sorted!");
 }
 
 //this function ensures first button is a number
-function firstCheckButton()
+function firstCheckButton(thisButtonData)
 {
-  if(this.data === 'number')
+  if(thisButtonData === 'number')
   {
-    buttonNumber = this.dataNumber;
+    buttonNumber = thisButtonData;
     storeNumberData = buttonNumber;
     counterNumbers = 1;
   }
@@ -45,14 +58,14 @@ function firstCheckButton()
   {
     errorMessage();
   }
-  console.log("ThingC");
+  console.log("First Check!");
 }
 
 function errorMessage()
 {
   $("#result").text("ERROR");
   clearInfo();
-  console.log("ThingD");
+  console.log("Errored!");
 }
 
 //this clears arrays of info as well as counters
@@ -62,37 +75,37 @@ function clearInfo()
   operatorArray = [];
   counterNumbers = 0;
   counterOperators = 0;
-  console.log("ThingE");
+  console.log("Info Cleared!");
 }
 
 //this function concatenates multi-digit numbers or adds operator
-function secondCheckButton()
+function secondCheckButton(justThis)
 {
-  switch(this.data)
+  switch(thisButtonData)
   {
   case 'number':
-  buttonNumber = this.dataNumber;
+  buttonNumber = thisButtonData;
   storeNumberData += buttonNumber;
   break;
   case 'operator':
   numberArray[counterNumbers] = storeNumberData;
   counterNumbers++;
-  buttonData = this.dataOperator;
+  buttonData = thisButtonData;
   operatorArray[counterOperators] = buttonData;
   counterOperators++;
   break;
   case 'spec':
-  buttonData = this.dataSpec;
+  buttonData = thisButtonData;
   specialCases();
   break;
   default:
   errorMessage();
   break;
   }
-  console.log("ThingF"); //This isn't working
+  console.log("Second Check!"); //This isn't working
 }
 
-function specialCases()
+function specialCases(justThis)
 {
   if(buttonData == "clear")
   {
@@ -103,47 +116,47 @@ function specialCases()
   {
     errorMessage();
   }
-  console.log("ThingG"); //This isn't working
+  console.log("Special Button 1!"); //This isn't working
 }
 
 //this ensures another number comes after operator
-function nextCheckButton()
+function nextCheckButton(thisButtonData)
 {
-  if(this.data == "number")
+  if(thisButtonData == "number")
   {
-    nextNum();
+    nextNum(thisButtonData);
   }
   else
   {
-    nextNonNum();
+    nextNonNum(thisButtonData);
   }
-  console.log("ThingH"); //This isn't working
+  console.log("Third or more Check!"); //This isn't working
 }
 
-function nextNum()
+function nextNum(thisButtonData)
 {
-  buttonNumber = this.dataNumber;
+  buttonNumber = thisButtonData;
   storeNumberData += buttonNumber;
   canSend = true;
-  console.log("ThingI"); //This isn't working
+  console.log("Third or more was Num!"); //This isn't working
 }
 
-function nextNonNum()
+function nextNonNum(thisButtonData)
 {
-  switch(this.data)
+  switch(thisButtonData)
   {
   case 'operator':
   operatorSplit();
   break;
   case 'spec':
-  buttonData = this.dataSpec;
+  buttonData = thisButtonData;
   finalSpecialCases();
   break;
   default:
   errorMessage();
   break;
   }
-  console.log("ThingJ"); //This isn't working
+  console.log("Third or more non-Num!"); //This isn't working
 }
 
 //this prevents an attempt to calculate on N,O,N,O,etc- type inputs ("nono's!")
@@ -157,10 +170,10 @@ function operatorSplit()
   {
     errorMessage();
   }
-  console.log("ThingK"); //This isn't working
+  console.log("Operator Split!"); //This isn't working
 }
 
-function finalSpecialCases()
+function finalSpecialCases(justThis)
 {
   if(buttonData == "clear")
   {
@@ -171,7 +184,7 @@ function finalSpecialCases()
   {
     checkToSend();
   }
-  console.log("ThingL"); //This isn't working
+  console.log("Special Buttons 2!"); //This isn't working
 }
 
 function checkToSend()
@@ -184,7 +197,7 @@ function checkToSend()
   {
     errorMessage();
   }
-  console.log("ThingM"); //This isn't working
+  console.log("Checked to Send!"); //This isn't working
 }
 
 function sendReq()
@@ -192,23 +205,41 @@ function sendReq()
   calculationObject.numbers = numberArray;
   calculationObject.operators = operatorArray;
 
+  console.log("Running POST!");
   $.ajax(
     {
     type: "POST",
     url: "/calculate",
     data: calculationObject,
-    success: function(response)
+    success: function()
       {
-      updateDom(response);
+      console.log("POST worked!");
       }
     });
-    console.log("ThingN"); //This isn't working
+    getAnswer();
+    console.log("Ran GET after POST!"); //This isn't working (Does with sendReq in DocReady)
+}
+
+function getAnswer()
+{
+  console.log("Running GET!");
+  $.ajax(
+    {
+    type: "GET",
+    url: "/finished",
+    success: function(response)
+      {
+        console.log("GET worked!");
+        updateDom(response);
+      }
+    });
+    console.log("GET complete!");
 }
 
 function updateDom(response)
 {
   $("#result").append(response);
-  console.log("ThingO"); //This isn't working
+  console.log("DOM Updated!"); //This isn't working
 }
 
 //EXTRA: delay res from server to display for 3000, with "computing" until res
