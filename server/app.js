@@ -10,6 +10,7 @@ var numberArray = [];
 var operatorArray = [];
 var calculatingArray = [];
 var output;
+var finalOutput;
 
 // set default path
 app.use(express.static('server/public'));
@@ -30,8 +31,10 @@ app.post("/calculate" , function(req, res)
   numberArray = calculationObject.numbers;
   operatorArray = calculationObject.operators;
   calculateResult(res);
-  res.sendStatus(200);
+  //res.send();
+  res.send({finalOutput: finalOutput});
 });
+
 
 //creates single array of alternating numbers and operators
 function calculateResult()
@@ -59,19 +62,9 @@ function arrayToCalc(res)
   numString = numString.replace(/divide/g, "/");
   console.log(numString);
   output = eval(numString);
+  finalOutput = output.toString();
   console.log("Calculated answer!");
 }
-
-app.get("/finished" , function(req, res)
-{
-  console.log("Sent answer!");
-  res.send(output);
-  // This gives the error:
-  // "express deprecated res.send(status): Use res.sendStatus(status) instead
-  //   server/app.js:68:7
-  //   RangeError: Invalid status code: -9"
-  // For some reason.... Despite matching previous working examples.
-});
 
 //this just shows it's set up
 app.listen(port, function()

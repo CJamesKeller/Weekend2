@@ -20,37 +20,36 @@ $(document).ready(function()
     $(".container").on("click", "button", function()
     {
       thisButton = $(this);
-      console.log(thisButton);
-      buttonClicked(thisButtonData);
+      buttonClicked(thisButton);
       console.log("Click Listener!");
     });
 //end of DocReady
 });
 
 //checks for which buttons have been pressed in what order
-function buttonClicked(thisButtonData)
+function buttonClicked(thisButton)
 {
   if(counterOperators === 1)
   {
-    nextCheckButton(thisButtonData);
+    nextCheckButton(thisButton);
   }
   else if(counterNumbers === 1)
   {
-    secondCheckButton(thisButtonData);
+    secondCheckButton(thisButton);
   }
   else
   {
-    firstCheckButton(thisButtonData);
+    firstCheckButton(thisButton);
   }
   console.log("Click Sorted!");
 }
 
 //this function ensures first button is a number
-function firstCheckButton(thisButtonData)
+function firstCheckButton(thisButton)
 {
-  if(thisButtonData === 'number')
+  if(thisButton.data("number") !== undefined)
   {
-    buttonNumber = thisButtonData;
+    buttonNumber = thisButton.data("number");
     storeNumberData = buttonNumber;
     counterNumbers = 1;
   }
@@ -79,23 +78,28 @@ function clearInfo()
 }
 
 //this function concatenates multi-digit numbers or adds operator
-function secondCheckButton(justThis)
+function secondCheckButton(thisButton)
 {
-  switch(thisButtonData)
+
+  // ***
+  //This has be changed into if statements
+  // ***
+
+  switch(thisButton.data)
   {
   case 'number':
-  buttonNumber = thisButtonData;
+  buttonNumber = thisButton.data;
   storeNumberData += buttonNumber;
   break;
   case 'operator':
   numberArray[counterNumbers] = storeNumberData;
   counterNumbers++;
-  buttonData = thisButtonData;
+  buttonData = thisButton.data;
   operatorArray[counterOperators] = buttonData;
   counterOperators++;
   break;
   case 'spec':
-  buttonData = thisButtonData;
+  buttonData = thisButton.data;
   specialCases();
   break;
   default:
@@ -105,14 +109,14 @@ function secondCheckButton(justThis)
   console.log("Second Check!"); //This isn't working
 }
 
-function specialCases(justThis)
+function specialCases(thisButton)
 {
-  if(buttonData == "clear")
+  if(thisButton.data("spec") == "clear")
   {
     $("#result").empty();
     clearInfo();
   }
-  else if (buttonData == "perform")
+  else if (thisButton.data("spec") == "perform")
   {
     errorMessage();
   }
@@ -120,36 +124,41 @@ function specialCases(justThis)
 }
 
 //this ensures another number comes after operator
-function nextCheckButton(thisButtonData)
+function nextCheckButton(thisButton)
 {
-  if(thisButtonData == "number")
+  if(thisButton.data("spec") === undefined && thisButton.data("operator") === undefined && thisButton.data("number") !== undefined)
   {
-    nextNum(thisButtonData);
+    nextNum(thisButton);
   }
   else
   {
-    nextNonNum(thisButtonData);
+    nextNonNum(thisButton);
   }
   console.log("Third or more Check!"); //This isn't working
 }
 
-function nextNum(thisButtonData)
+function nextNum(thisButton)
 {
-  buttonNumber = thisButtonData;
+  buttonNumber = thisButton.data("number");
   storeNumberData += buttonNumber;
   canSend = true;
   console.log("Third or more was Num!"); //This isn't working
 }
 
-function nextNonNum(thisButtonData)
+function nextNonNum(thisButton)
 {
-  switch(thisButtonData)
+
+  // ***
+  //This has be changed into if statements
+  // ***
+
+  switch(thisButton.data)
   {
   case 'operator':
   operatorSplit();
   break;
   case 'spec':
-  buttonData = thisButtonData;
+  buttonData = thisButton.data;
   finalSpecialCases();
   break;
   default:
@@ -173,14 +182,14 @@ function operatorSplit()
   console.log("Operator Split!"); //This isn't working
 }
 
-function finalSpecialCases(justThis)
+function finalSpecialCases(thisButton)
 {
-  if(buttonData == "clear")
+  if(thisButton.data("spec") == "clear")
   {
     $("#result").empty();
     clearInfo();
   }
-  else if (buttonData == "perform")
+  else if (thisButton.data("spec") == "perform")
   {
     checkToSend();
   }
@@ -216,24 +225,6 @@ function sendReq()
       console.log("POST worked!");
       }
     });
-    getAnswer();
-    console.log("Ran GET after POST!"); //This isn't working (Does with sendReq in DocReady)
-}
-
-function getAnswer()
-{
-  console.log("Running GET!");
-  $.ajax(
-    {
-    type: "GET",
-    url: "/finished",
-    success: function(response)
-      {
-        console.log("GET worked!");
-        updateDom(response);
-      }
-    });
-    console.log("GET complete!");
 }
 
 function updateDom(response)
